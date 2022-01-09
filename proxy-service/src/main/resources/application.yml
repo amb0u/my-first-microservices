@@ -1,0 +1,25 @@
+server:
+  port: 9999
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+spring:
+  application:
+    name: proxy-service
+  cloud:
+    gateway:
+      enabled: true
+      routes:
+        - id: product-service
+          uri: lb://product-service
+          order: 9000
+          predicates:
+            - Path=/products/**
+          - id: message
+              uri: http://localhost:8080/messages
+              order: 9001
+              predicates:
+                - Path=/message/**
